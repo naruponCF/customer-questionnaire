@@ -63,7 +63,7 @@ export function renderAdminDashboard(
       ? `<select class="distributor-select" data-id="${s.id}"><option value=""${!s.distributor?" selected":""}>— Unassigned —</option><option value="SoftDebut"${s.distributor==="SoftDebut"?" selected":""}>SoftDebut</option><option value="Nforce"${s.distributor==="Nforce"?" selected":""}>Nforce</option></select>`
       : `<span class="badge ${s.distributor==="SoftDebut"?"badge-soft":"badge-nforce"}">${esc(s.distributor)||"Unassigned"}</span>`}
     </td>
-    <td class="actions"><button class="view-btn" data-id="${s.id}">View</button>${isAdmin?`<button class="delete-btn" data-id="${s.id}">Delete</button>`:""}</td>
+    <td class="actions"><button class="view-btn" data-id="${s.id}">View</button><button class="editlink-btn" data-id="${s.id}">Edit Link</button>${isAdmin?`<button class="delete-btn" data-id="${s.id}">Delete</button>`:""}</td>
   </tr>`).join("");
 
   const userRows = users.map(u => `<tr data-username="${esc(u.username)}">
@@ -104,11 +104,12 @@ export function renderAdminDashboard(
     td{padding:0.65rem 1rem;font-size:0.85rem;border-bottom:1px solid #f0f0f0;}
     tr:hover{background:#fafafa;}
     .actions{display:flex;gap:0.5rem;}
-    .view-btn,.delete-btn,.pw-btn,.rmuser-btn{padding:0.3rem 0.7rem;border:none;border-radius:5px;font-size:0.8rem;cursor:pointer;font-weight:600;}
+    .view-btn,.delete-btn,.pw-btn,.rmuser-btn,.editlink-btn{padding:0.3rem 0.7rem;border:none;border-radius:5px;font-size:0.8rem;cursor:pointer;font-weight:600;}
     .view-btn{background:#F38020;color:#fff;} .view-btn:hover{background:#e06d1a;}
     .delete-btn{background:#e74c3c;color:#fff;} .delete-btn:hover{background:#c0392b;}
     .pw-btn{background:#3498db;color:#fff;} .pw-btn:hover{background:#2980b9;}
     .rmuser-btn{background:#e74c3c;color:#fff;} .rmuser-btn:hover{background:#c0392b;}
+    .editlink-btn{background:#27ae60;color:#fff;} .editlink-btn:hover{background:#229954;}
     .distributor-select{padding:0.25rem 0.5rem;border:1px solid #ddd;border-radius:4px;font-size:0.8rem;}
     .badge{padding:0.2rem 0.6rem;border-radius:10px;font-size:0.75rem;font-weight:600;}
     .badge-soft{background:#e8f5e9;color:#2e7d32;} .badge-nforce{background:#e3f2fd;color:#1565c0;}
@@ -242,6 +243,15 @@ export function renderAdminDashboard(
       try{const r=await fetch('/admin/api/delete/'+btn.dataset.id,{method:'DELETE',headers:{'X-CSRF-Token':CSRF}});
       if(r.ok){showToast('Submission deleted','success');btn.closest('tr').remove();}else showToast('Delete failed','error');
       }catch{showToast('Delete failed','error');}
+    }));
+
+    document.querySelectorAll('.editlink-btn').forEach(btn=>btn.addEventListener('click',()=>{
+      const link=window.location.origin+'/edit/'+btn.dataset.id;
+      navigator.clipboard.writeText(link).then(()=>{
+        showToast('Edit link copied to clipboard!','success');
+      }).catch(()=>{
+        prompt('Copy this edit link:',link);
+      });
     }));
 
     document.querySelectorAll('.distributor-select').forEach(sel=>sel.addEventListener('change',async()=>{

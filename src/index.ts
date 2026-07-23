@@ -113,6 +113,40 @@ app.post("/api/submit", async (c) => {
   }
 });
 
+// Pre-filled edit form for customers
+app.get("/edit/:id", async (c) => {
+  const submission = await getFromR2(c.env, c.req.param("id"));
+  if (!submission) return c.text("Submission not found", 404);
+  const prefilled = {
+    general: submission.general,
+    appServices: submission.appServices,
+    zeroTrust: submission.zeroTrust,
+    developer: submission.developer,
+    additional: submission.additional,
+  };
+  return c.html(renderForm(prefilled, submission.id));
+});
+
+// Update existing submission
+app.post("/api/update/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const existing = await getFromR2(c.env, id);
+    if (!existing) return c.json({ success: false, error: "Submission not found" }, 404);
+    const body = await c.req.json();
+    // Update fields but preserve id, distributor, and original submittedAt
+    existing.general = body.general || existing.general;
+    existing.appServices = body.appServices || existing.appServices;
+    existing.zeroTrust = body.zeroTrust || existing.zeroTrust;
+    existing.developer = body.developer || existing.developer;
+    existing.additional = body.additional || existing.additional;
+    await saveToR2(c.env, existing);
+    return c.json({ success: true, id });
+  } catch {
+    return c.json({ success: false, error: "Failed to update submission" }, 500);
+  }
+});
+
 // ═══════════════════════════════════════════════════════════
 //  ADMIN ROUTES
 // ═══════════════════════════════════════════════════════════

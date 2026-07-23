@@ -81,9 +81,12 @@ export async function verifyJWT(token: string, secret: string): Promise<JWTPaylo
 export async function getUsers(env: Env): Promise<UserRecord[]> {
   const obj = await env.QUESTIONNAIRE_BUCKET.get(USERS_KEY);
   if (obj) {
-    try { return JSON.parse(await obj.text()) as UserRecord[]; } catch {}
+    try {
+      const users = JSON.parse(await obj.text()) as UserRecord[];
+      if (users.length > 0) return users;
+    } catch {}
   }
-  // Bootstrap from env
+  // Bootstrap from env (also runs if R2 file is empty/invalid)
   const bootstrapUsers: UserRecord[] = [];
   try {
     const adminUsers = JSON.parse(env.ADMIN_USERS) as AdminUser[];

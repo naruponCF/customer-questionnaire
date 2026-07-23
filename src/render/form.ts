@@ -1,4 +1,7 @@
-export function renderForm(): string {
+export function renderForm(prefilledData?: any, editId?: string): string {
+  const editMode = !!editId;
+  // Build a JS object to pre-fill form fields
+  const prefilledJson = prefilledData ? JSON.stringify(prefilledData) : "null";
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -594,7 +597,7 @@ export function renderForm(): string {
       </div>
     </div>
 
-    <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">Submit Questionnaire</button>
+    <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">${editMode ? "Update Questionnaire" : "Submit Questionnaire"}</button>
   </div>
 
   <div class="footer">Cloudflare Customer Information Questionnaire · Powered by Cloudflare Workers &amp; R2</div>
@@ -606,10 +609,25 @@ export function renderForm(): string {
       els.forEach(el => { if (el.name) data[el.name] = el.value.trim(); });
       return data;
     }
+
+    // Pre-fill form fields from existing submission data
+    const PREFILLED = ${prefilledJson};
+    const EDIT_ID = ${editId ? `"${editId}"` : "null"};
+    if (PREFILLED) {
+      for (const [section, fields] of Object.entries(PREFILLED)) {
+        if (typeof fields !== 'object') continue;
+        for (const [field, value] of Object.entries(fields)) {
+          const name = section + '.' + field;
+          const el = document.querySelector('[name="' + name + '"]');
+          if (el && value) el.value = value;
+        }
+      }
+    }
+
     async function submitForm() {
       const btn = document.getElementById('submitBtn');
       const alertEl = document.getElementById('alert');
-      btn.disabled = true; btn.textContent = 'Submitting...';
+      btn.disabled = true; btn.textContent = EDIT_ID ? 'Updating...' : 'Submitting...';
       const required = document.querySelectorAll('[required]');
       for (const el of required) {
         if (!el.value.trim()) {
@@ -617,7 +635,7 @@ export function renderForm(): string {
           alertEl.className = 'alert error';
           alertEl.textContent = 'Please fill in all required fields (marked with *).';
           alertEl.style.display = 'block';
-          btn.disabled = false; btn.textContent = 'Submit Questionnaire';
+          btn.disabled = false; btn.textContent = EDIT_ID ? 'Update Questionnaire' : 'Submit Questionnaire';
           return;
         }
       }
@@ -629,20 +647,20 @@ export function renderForm(): string {
           if (parts.length === 2) { if (!nested[parts[0]]) nested[parts[0]] = {}; nested[parts[0]][parts[1]] = val; }
           else nested[key] = val;
         }
-        const resp = await fetch('/api/submit', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(nested) });
+        const url = EDIT_ID ? '/api/update/' + EDIT_ID : '/api/submit';
+        const resp = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(nested) });
         if (resp.ok) {
           alertEl.className = 'alert success';
-          alertEl.textContent = '✅ Thank you! Your questionnaire has been submitted successfully.';
+          alertEl.textContent = EDIT_ID ? '✅ Your questionnaire has been updated successfully.' : '✅ Thank you! Your questionnaire has been submitted successfully.';
           alertEl.style.display = 'block';
           window.scrollTo({ top:0, behavior:'smooth' });
-          btn.textContent = 'Submitted ✓';
-          document.querySelectorAll('input, select, textarea').forEach(el => { if(el.name) el.value=''; });
+          btn.textContent = EDIT_ID ? 'Updated ✓' : 'Submitted ✓';
         } else throw new Error('Submission failed');
       } catch {
         alertEl.className = 'alert error';
         alertEl.textContent = '❌ Something went wrong. Please try again.';
         alertEl.style.display = 'block';
-        btn.disabled = false; btn.textContent = 'Submit Questionnaire';
+        btn.disabled = false; btn.textContent = EDIT_ID ? 'Update Questionnaire' : 'Submit Questionnaire';
       }
     }
   </script>
