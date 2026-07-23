@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local development
+JWT_SECRET=your-local-jwt-secret-change-me
+ADMIN_PASSWORDS={"superadmin":"superadmin123","softdebut":"softdebut123","nforce":"nforce123"}

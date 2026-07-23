@@ -1,0 +1,21 @@
+name = "customer-questionnaire"
+compatibility_date = "2024-12-01"
+main = "src/index.ts"
+
+# R2 bucket for storing questionnaire submissions
+[[r2_buckets]]
+binding = "QUESTIONNAIRE_BUCKET"
+bucket_name = "customer-questionnaire"
+
+# KV namespace for admin session tokens (optional, JWT is stateless by default)
+# [[kv_namespaces]]
+# binding = "SESSIONS"
+# id = "your-kv-namespace-id"
+
+# Non-secret vars (visible in dashboard, safe to commit)
+[vars]
+ADMIN_USERS = '[{"username":"superadmin","role":"superadmin"},{"username":"softdebut","role":"user","distributor":"SoftDebut"},{"username":"nforce","role":"user","distributor":"Nforce"}]'
+
+# Secrets — set via: wrangler secret put <NAME>
+# JWT_SECRET   — used to sign/verify session tokens
+# ADMIN_PASSWORDS — JSON: {"superadmin":"...","softdebut":"...","nforce":"..."}
