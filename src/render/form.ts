@@ -57,11 +57,11 @@ export function renderForm(): string {
       </div>
       <div class="field">
         <label>Country / region of operation <span class="req">*</span></label>
-        <input type="text" name="general.country" required>
+        <input type="text" name="general.country">
       </div>
       <div class="field">
         <label>Website domain(s) to be protected <span class="req">*</span></label>
-        <input type="text" name="general.websiteDomains" required placeholder="example.com, app.example.com">
+        <input type="text" name="general.websiteDomains" placeholder="example.com, app.example.com">
       </div>
       <div class="field-row">
         <div class="field">
@@ -74,9 +74,15 @@ export function renderForm(): string {
         </div>
       </div>
       <div class="field-row">
-        <div class="field">
-          <label>Primary technical contact name and email</label>
-          <input type="text" name="general.techContact">
+        <div class="field-row">
+          <div class="field">
+            <label>Primary contact name <span class="req">*</span></label>
+            <input type="text" name="general.techContact" required>
+          </div>
+          <div class="field">
+            <label>Primary contact phone/email <span class="req">*</span></label>
+            <input type="text" name="general.techContactEmail" required placeholder="phone or email">
+          </div>
         </div>
         <div class="field">
           <label>Billing contact name and email</label>
@@ -85,8 +91,8 @@ export function renderForm(): string {
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Contract term preference <span class="req">*</span></label>
-          <select name="general.contractTerm" required><option value="">— Select —</option><option>Annual</option><option>Multi-year (2 years)</option><option>Multi-year (3 years)</option></select>
+          <label>Contract term preference</label>
+          <select name="general.contractTerm"><option value="">— Select —</option><option>Annual</option><option>Multi-year (2 years)</option><option>Multi-year (3 years)</option></select>
         </div>
         <div class="field">
           <label>Target start date</label>
@@ -117,7 +123,7 @@ export function renderForm(): string {
       <h3>1.1 Traffic &amp; Performance</h3>
       <div class="field">
         <label>Average monthly HTTP/HTTPS requests <span class="req">*</span></label>
-        <input type="text" name="appServices.avgMonthlyRequests" required placeholder="e.g., 500M, 2B, 10B">
+        <input type="text" name="appServices.avgMonthlyRequests" placeholder="e.g., 500M, 2B, 10B">
       </div>
       <div class="field">
         <label>Average monthly bandwidth TB (egress)</label>
@@ -145,7 +151,7 @@ export function renderForm(): string {
       <h3>1.2 Application Security</h3>
       <div class="field">
         <label>Current WAF solution <span class="req">*</span></label>
-        <input type="text" name="appServices.currentWAF" required placeholder="Cloudflare, Akamai, Imperva, AWS WAF, F5, none">
+        <input type="text" name="appServices.currentWAF" placeholder="Cloudflare, Akamai, Imperva, AWS WAF, F5, none">
       </div>
       <div class="field-row">
         <div class="field">
@@ -178,8 +184,8 @@ export function renderForm(): string {
 
       <h3>1.3 DDoS Protection</h3>
       <div class="field">
-        <label>Have you experienced DDoS attacks? <span class="req">*</span></label>
-        <input type="text" name="appServices.ddosExperienced" required placeholder="frequency and scale">
+        <label>Have you experienced DDoS attacks?</label>
+        <input type="text" name="appServices.ddosExperienced" placeholder="frequency and scale">
       </div>
       <div class="field-row">
         <div class="field">
@@ -222,11 +228,11 @@ export function renderForm(): string {
       <div class="field-row">
         <div class="field">
           <label>Number of users / seats <span class="req">*</span></label>
-          <input type="text" name="zeroTrust.numUsers" required>
+          <input type="text" name="zeroTrust.numUsers">
         </div>
         <div class="field">
           <label>Identity provider <span class="req">*</span></label>
-          <input type="text" name="zeroTrust.identityProvider" required placeholder="Okta, Entra ID, Google Workspace, JumpCloud, other">
+          <input type="text" name="zeroTrust.identityProvider" placeholder="Okta, Entra ID, Google Workspace, JumpCloud, other">
         </div>
       </div>
       <div class="field-row">
@@ -313,12 +319,12 @@ export function renderForm(): string {
       <h3>2.3 Email Security</h3>
       <div class="field-row">
         <div class="field">
-          <label>Current email provider <span class="req">*</span></label>
-          <input type="text" name="zeroTrust.emailProvider" required placeholder="M365, Google Workspace, on-prem Exchange">
+          <label>Current email provider</label>
+          <input type="text" name="zeroTrust.emailProvider" placeholder="M365, Google Workspace, on-prem Exchange">
         </div>
         <div class="field">
-          <label>Number of mailboxes <span class="req">*</span></label>
-          <input type="text" name="zeroTrust.numMailboxes" required>
+          <label>Number of mailboxes</label>
+          <input type="text" name="zeroTrust.numMailboxes">
         </div>
       </div>
       <div class="field">

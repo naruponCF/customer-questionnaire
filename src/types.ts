@@ -23,6 +23,7 @@ export interface QuestionnaireSubmission {
     currentPlan: string;
     currentVendor: string;
     techContact: string;
+    techContactEmail: string;
     billingContact: string;
     contractTerm: string;
     targetStartDate: string;
