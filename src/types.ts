@@ -1,19 +1,24 @@
 export interface Env {
   QUESTIONNAIRE_BUCKET: R2Bucket;
   JWT_SECRET: string;
-  ADMIN_PASSWORDS: string;
-  ADMIN_USERS: string;
+  ADMIN_PASSWORDS: string;   // bootstrap fallback (JSON map)
+  ADMIN_USERS: string;        // bootstrap fallback (JSON array)
+}
+
+export interface UserRecord {
+  username: string;
+  role: "superadmin" | "user";
+  distributor?: string; // "SoftDebut" | "Nforce" — only for role=user
+  passwordHash: string;
 }
 
 export interface QuestionnaireSubmission {
   id: string;
   submittedAt: string;
-  distributor: string; // "SoftDebut" | "Nforce" | "" — set by superadmin in admin panel
+  distributor: string; // "SoftDebut" | "Nforce" | "" — set by superadmin
   general: {
     companyName: string;
     country: string;
-    industry: string;
-    employees: string;
     websiteDomains: string;
     currentPlan: string;
     currentVendor: string;
@@ -27,41 +32,25 @@ export interface QuestionnaireSubmission {
   };
   appServices: {
     avgMonthlyRequests: string;
-    peakMonthlyRequests: string;
-    avgMonthlyBandwidth: string;
+    avgMonthlyBandwidthTB: string;
     numHostnames: string;
     originInfra: string;
     currentCDN: string;
-    cacheHitRatio: string;
-    peakToAvgRatio: string;
     latencySLA: string;
-    argoInterest: string;
-    tieredCacheInterest: string;
     currentWAF: string;
     numWebApps: string;
     securityConcerns: string;
     botManagementInterest: string;
     numAPIs: string;
     apiGatewayInterest: string;
-    pageShieldInterest: string;
     wafComplianceDrivers: string;
-    customRulesNeeded: string;
     ddosExperienced: string;
     currentDDoS: string;
     peakAttackSize: string;
     ddosLayers: string;
-    ddosMode: string;
     dnsProvider: string;
     dnsRecords: string;
     dnsQueries: string;
-    dnsFirewallInterest: string;
-    secondaryDnsInterest: string;
-    imagesInterest: string;
-    streamInterest: string;
-    zarazInterest: string;
-    spectrumInterest: string;
-    chinaNetworkInterest: string;
-    loadBalancingInterest: string;
   };
   zeroTrust: {
     numUsers: string;
@@ -141,10 +130,4 @@ export interface QuestionnaireSubmission {
     customContracting: string;
     comments: string;
   };
-}
-
-export interface R2Record {
-  key: string;
-  uploaded: string;
-  size: number;
 }
