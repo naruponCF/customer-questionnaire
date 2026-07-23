@@ -153,12 +153,12 @@ export function renderAdminDashboard(
 
   <!-- Submissions tab -->
   <div class="tab-content active" id="tab-submissions">
-    <div class="stats">
+    ${isAdmin ? `<div class="stats">
       <div class="stat-card"><div class="num">${visibleSubs.length}</div><div class="lbl">Total Submissions</div></div>
       <div class="stat-card"><div class="num">${visibleSubs.filter(s=>s.distributor==="SoftDebut").length}</div><div class="lbl">SoftDebut</div></div>
       <div class="stat-card"><div class="num">${visibleSubs.filter(s=>s.distributor==="Nforce").length}</div><div class="lbl">Nforce</div></div>
       <div class="stat-card"><div class="num">${visibleSubs.filter(s=>!s.distributor).length}</div><div class="lbl">Unassigned</div></div>
-    </div>
+    </div>` : ""}
     <div class="filter-bar"><input type="text" id="searchBox" placeholder="🔍 Search company name..." onkeyup="filterTable()"></div>
     <div class="table-wrap">
       <table id="subsTable"><thead><tr><th>Submitted At</th><th>Company</th><th>Country</th><th>Contract Term</th><th>Current Vendor</th><th>Distributor</th><th>Actions</th></tr></thead>
