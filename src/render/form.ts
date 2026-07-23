@@ -56,17 +56,17 @@ export function renderForm(): string {
         <input type="text" name="general.companyName" required>
       </div>
       <div class="field">
-        <label>Country / region of operation <span class="req">*</span></label>
+        <label>Country / region of operation</label>
         <input type="text" name="general.country">
       </div>
       <div class="field">
-        <label>Website domain(s) to be protected <span class="req">*</span></label>
+        <label>Website domain(s) to be protected</label>
         <input type="text" name="general.websiteDomains" placeholder="example.com, app.example.com">
       </div>
       <div class="field-row">
         <div class="field">
           <label>Current Cloudflare plan</label>
-          <select name="general.currentPlan"><option value="">— Select —</option><option>Free</option><option>Pro</option><option>Business</option><option>Enterprise</option></select>
+          <select name="general.currentPlan"><option value="">— Select —</option><option>No</option><option>Free</option><option>Pro</option><option>Business</option><option>Enterprise</option></select>
         </div>
         <div class="field">
           <label>Current CDN / security vendor(s) if any</label>
@@ -122,7 +122,7 @@ export function renderForm(): string {
 
       <h3>1.1 Traffic &amp; Performance</h3>
       <div class="field">
-        <label>Average monthly HTTP/HTTPS requests <span class="req">*</span></label>
+        <label>Average monthly HTTP/HTTPS requests</label>
         <input type="text" name="appServices.avgMonthlyRequests" placeholder="e.g., 500M, 2B, 10B">
       </div>
       <div class="field">
@@ -150,7 +150,7 @@ export function renderForm(): string {
 
       <h3>1.2 Application Security</h3>
       <div class="field">
-        <label>Current WAF solution <span class="req">*</span></label>
+        <label>Current WAF solution</label>
         <input type="text" name="appServices.currentWAF" placeholder="Cloudflare, Akamai, Imperva, AWS WAF, F5, none">
       </div>
       <div class="field-row">
@@ -227,11 +227,11 @@ export function renderForm(): string {
       <h3>2.1 Identity &amp; Access (ZTNA)</h3>
       <div class="field-row">
         <div class="field">
-          <label>Number of users / seats <span class="req">*</span></label>
+          <label>Number of users / seats</label>
           <input type="text" name="zeroTrust.numUsers">
         </div>
         <div class="field">
-          <label>Identity provider <span class="req">*</span></label>
+          <label>Identity provider</label>
           <input type="text" name="zeroTrust.identityProvider" placeholder="Okta, Entra ID, Google Workspace, JumpCloud, other">
         </div>
       </div>
