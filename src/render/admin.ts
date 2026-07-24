@@ -66,13 +66,16 @@ export function renderAdminDashboard(
     <td class="actions"><button class="view-btn" data-id="${s.id}">View</button><button class="editlink-btn" data-id="${s.id}">Edit Link</button>${isAdmin?`<button class="delete-btn" data-id="${s.id}">Delete</button>`:""}</td>
   </tr>`).join("");
 
-  const userRows = users.map(u => `<tr data-username="${esc(u.username)}">
+  // For non-superadmin, only show their own row
+  const visibleUsers = isAdmin ? users : users.filter(u => u.username === username);
+
+  const userRows = visibleUsers.map(u => `<tr data-username="${esc(u.username)}">
     <td>${esc(u.username)}</td>
     <td><span class="badge ${u.role==="superadmin"?"badge-admin":"badge-user"}">${u.role}</span></td>
     <td>${esc(u.distributor) || "—"}</td>
     <td class="actions">
       <button class="pw-btn" data-username="${esc(u.username)}">Reset Password</button>
-      ${u.role!=="superadmin"||users.filter(x=>x.role==="superadmin").length>1?`<button class="rmuser-btn" data-username="${esc(u.username)}">Remove</button>`:""}
+      ${isAdmin && (u.role!=="superadmin"||users.filter(x=>x.role==="superadmin").length>1) ? `<button class="rmuser-btn" data-username="${esc(u.username)}">Remove</button>` : ""}
     </td>
   </tr>`).join("");
 
@@ -149,7 +152,7 @@ export function renderAdminDashboard(
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('submissions')">Submissions</button>
-    ${isAdmin ? `<button class="tab" onclick="switchTab('users')">User Management</button>` : ""}
+    <button class="tab" onclick="switchTab('users')">User Management</button>
   </div>
 
   <!-- Submissions tab -->
@@ -159,7 +162,9 @@ export function renderAdminDashboard(
       <div class="stat-card"><div class="num">${visibleSubs.filter(s=>s.distributor==="SoftDebut").length}</div><div class="lbl">SoftDebut</div></div>
       <div class="stat-card"><div class="num">${visibleSubs.filter(s=>s.distributor==="Nforce").length}</div><div class="lbl">Nforce</div></div>
       <div class="stat-card"><div class="num">${visibleSubs.filter(s=>!s.distributor).length}</div><div class="lbl">Unassigned</div></div>
-    </div>` : ""}
+    </div>` : `<div class="stats">
+      <div class="stat-card"><div class="num">${visibleSubs.length}</div><div class="lbl">Total Submissions</div></div>
+    </div>`}
     <div class="filter-bar"><input type="text" id="searchBox" placeholder="🔍 Search company name..." onkeyup="filterTable()"></div>
     <div class="table-wrap">
       <table id="subsTable"><thead><tr><th>Submitted At</th><th>Company</th><th>Country</th><th>Contract Term</th><th>Current Vendor</th><th>Distributor</th><th>Actions</th></tr></thead>

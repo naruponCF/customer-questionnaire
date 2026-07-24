@@ -230,11 +230,16 @@ app.post("/admin/api/users/remove", requireSuperadmin(), async (c) => {
   return c.json({ success: true });
 });
 
-app.post("/admin/api/users/password", requireSuperadmin(), async (c) => {
+app.post("/admin/api/users/password", requireAuth(), async (c) => {
   const csrfToken = getCookie(c.req.header("Cookie"), "csrf_token");
   if (c.req.header("X-CSRF-Token") !== csrfToken) return c.json({ error: "Invalid CSRF token" }, 403);
+  const user = c.get("user") as AdminUser;
   const { username, newPassword } = await c.req.json();
   if (!username || !newPassword) return c.json({ error: "Username and new password required" }, 400);
+  // Non-superadmin can only change their own password
+  if (user.role !== "superadmin" && username !== user.username) {
+    return c.json({ error: "You can only change your own password" }, 403);
+  }
   const result = await updateUserPassword(c.env, username, newPassword);
   if (!result.success) return c.json(result, 400);
   return c.json({ success: true });
