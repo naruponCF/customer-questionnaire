@@ -1,7 +1,8 @@
-export function renderForm(prefilledData?: any, editId?: string): string {
+export function renderForm(prefilledData?: any, editId?: string, distributor?: string): string {
   const editMode = !!editId;
   // Build a JS object to pre-fill form fields
   const prefilledJson = prefilledData ? JSON.stringify(prefilledData) : "null";
+  const distributorVal = distributor || "";
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -597,6 +598,7 @@ export function renderForm(prefilledData?: any, editId?: string): string {
       </div>
     </div>
 
+    <input type="hidden" id="distributorField" value="${distributorVal}">
     <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">${editMode ? "Update Questionnaire" : "Submit Questionnaire"}</button>
   </div>
 
@@ -647,6 +649,9 @@ export function renderForm(prefilledData?: any, editId?: string): string {
           if (parts.length === 2) { if (!nested[parts[0]]) nested[parts[0]] = {}; nested[parts[0]][parts[1]] = val; }
           else nested[key] = val;
         }
+        // Include distributor from hidden field
+        const dist = document.getElementById('distributorField')?.value || '';
+        if (dist) nested._distributor = dist;
         const url = EDIT_ID ? '/api/update/' + EDIT_ID : '/api/submit';
         const resp = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(nested) });
         if (resp.ok) {

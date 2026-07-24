@@ -51,7 +51,8 @@ export function renderAdminDashboard(
   csrfToken: string,
 ): string {
   const isAdmin = role === "superadmin";
-  const visibleSubs = submissions; // all roles see all submissions
+  // Superadmin sees all; user sees only their distributor's submissions
+  const visibleSubs = isAdmin ? submissions : submissions.filter(s => s.distributor === distributor);
 
   const tableRows = visibleSubs.map(s => `<tr data-id="${s.id}">
     <td>${new Date(s.submittedAt).toLocaleString()}</td>

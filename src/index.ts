@@ -92,6 +92,10 @@ function requireSuperadmin() {
 
 app.get("/", (c) => c.html(renderForm()));
 
+// Distributor-specific form URLs — auto-set distributor field
+app.get("/form/softdebut", (c) => c.html(renderForm(undefined, undefined, "SoftDebut")));
+app.get("/form/nforce", (c) => c.html(renderForm(undefined, undefined, "Nforce")));
+
 app.post("/api/submit", async (c) => {
   try {
     const body = await c.req.json();
@@ -99,7 +103,7 @@ app.post("/api/submit", async (c) => {
     const submission: QuestionnaireSubmission = {
       id,
       submittedAt: new Date().toISOString(),
-      distributor: "",
+      distributor: body._distributor || "",
       general: body.general || {},
       appServices: body.appServices || {},
       zeroTrust: body.zeroTrust || {},
