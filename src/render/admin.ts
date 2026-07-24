@@ -51,7 +51,7 @@ export function renderAdminDashboard(
   csrfToken: string,
 ): string {
   const isAdmin = role === "superadmin";
-  const visibleSubs = isAdmin ? submissions : submissions.filter(s => s.distributor === distributor);
+  const visibleSubs = submissions; // all roles see all submissions
 
   const tableRows = visibleSubs.map(s => `<tr data-id="${s.id}">
     <td>${new Date(s.submittedAt).toLocaleString()}</td>
@@ -172,9 +172,8 @@ export function renderAdminDashboard(
     </div>
   </div>
 
-  ${isAdmin ? `
-  <!-- User management tab -->
   <div class="tab-content" id="tab-users">
+    ${isAdmin ? `
     <div class="add-user-form">
       <h3>➕ Add New User</h3>
       <div class="field-row">
@@ -185,11 +184,17 @@ export function renderAdminDashboard(
         <div><button onclick="addUser()">Add User</button></div>
       </div>
     </div>
+    ` : `
+    <div class="add-user-form">
+      <h3>🔑 Change Your Password</h3>
+      <p style="font-size:0.85rem;color:#666;margin-bottom:0.75rem;">You can only change your own password. Contact a superadmin for other user management.</p>
+    </div>
+    `}
     <div class="table-wrap">
       <table id="usersTable"><thead><tr><th>Username</th><th>Role</th><th>Distributor</th><th>Actions</th></tr></thead>
       <tbody>${userRows}</tbody></table>
     </div>
-  </div>` : ""}
+  </div>
 
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modalContent">
