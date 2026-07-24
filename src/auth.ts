@@ -77,16 +77,18 @@ export async function verifyJWT(token: string, secret: string): Promise<JWTPaylo
 // ─── R2-backed user store ─────────────────────────────────
 // On first call, bootstraps from env vars ADMIN_USERS + ADMIN_PASSWORDS
 // and writes to R2. Subsequent calls read from R2.
+// IMPORTANT: Once users exist in R2, they are NEVER overwritten by env vars.
+// This means password changes made via admin UI persist across deploys.
 
 export async function getUsers(env: Env): Promise<UserRecord[]> {
   const obj = await env.QUESTIONNAIRE_BUCKET.get(USERS_KEY);
   if (obj) {
     try {
       const users = JSON.parse(await obj.text()) as UserRecord[];
-      if (users.length > 0) return users;
+      if (users.length > 0) return users; // R2 has real users — use them, never overwrite
     } catch {}
   }
-  // Bootstrap from env (also runs if R2 file is empty/invalid)
+  // Bootstrap from env ONLY if R2 has no users file (first run ever)
   const bootstrapUsers: UserRecord[] = [];
   try {
     const adminUsers = JSON.parse(env.ADMIN_USERS) as AdminUser[];
